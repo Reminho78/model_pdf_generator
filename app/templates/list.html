@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Formulaires</title>
+    <!-- Lien vers le fichier CSS externe -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Liste des Formulaires</h1>
+
+    <!-- Boutons de navigation -->
+    <div style="text-align: center;">
+        <button onclick="window.location.href='/';">Accueil</button>
+        <button onclick="window.location.href='/form';">Formulaire</button>
+    </div>
+
+    <!-- Table des utilisateurs -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Implantation</th>
+                <th>Date de création</th>
+                <th>Adresse de facturation</th>
+                <th>Adresse de livraison</th>
+                <th>Raison</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for form in forms %}
+            <tr>
+                <td>{{ form.id }}</td>
+                <td>{{ form.implantation }}</td>
+                <td>{{ form.creation_date }}</td>
+                <td>{{ form.billing_address }}</td>
+                <td>{{ form.shipping_address }}</td>
+                <td>{{ form.reason }}</td>
+                <td>
+                    <!-- Formulaire pour supprimer un utilisateur -->
+                    <form action="/delete_form/{{ form.id }}" method="post" style="display:inline;">
+                        <button type="submit">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

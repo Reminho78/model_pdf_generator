@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un formulaire</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function toggleOtherReason() {
+            var reasonSelect = document.getElementById('reason');
+            var otherReasonInput = document.getElementById('other_reason');
+            if (reasonSelect.value === 'Autre motif') {
+                otherReasonInput.style.display = 'block';
+                otherReasonInput.required = true;
+            } else {
+                otherReasonInput.style.display = 'none';
+                otherReasonInput.required = false;
+            }
+        }
+
+        function handleSubmit(event) {
+            var reasonSelect = document.getElementById('reason');
+            var otherReasonInput = document.getElementById('other_reason');
+
+            // Si "Autre motif" est sélectionné, remplace la valeur de "reason" par celle de "other_reason"
+            if (reasonSelect.value === 'Autre motif') {
+                reasonSelect.value = otherReasonInput.value;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Ajouter un formulaire</h1>
+
+    <!-- Boutons de navigation -->
+    <div style="text-align: center;">
+        <button onclick="window.location.href='/';">Accueil</button>
+        <button onclick="window.location.href='/list';">Voir la Liste des Utilisateurs</button>
+    </div>
+
+    <!-- Formulaire pour ajouter un utilisateur -->
+    <form action="/submit_form" method="post" onsubmit="handleSubmit(event)">
+        <label for="implantation">Implantation:</label>
+        <input type="text" id="implantation" name="implantation" required>
+
+        <label for="creation_date">Date de création:</label>
+        <input type="date" id="creation_date" name="creation_date" required>
+
+        <label for="billing_address">Adresse de facturation:</label>
+        <input type="text" id="billing_address" name="billing_address" required>
+
+        <label for="shipping_address">Adresse de livraison:</label>
+        <input type="text" id="shipping_address" name="shipping_address" required>
+
+        <label for="reason">Motif :</label>
+        <select id="reason" name="reason" onchange="toggleOtherReason()" required>
+            <option value="" disabled selected>Choisissez un motif</option>
+            <option value="Fermeture des locaux">Fermeture des locaux</option>
+            <option value="Autre fournisseur">Autre fournisseur</option>
+            <option value="Autre motif">Autre motif</option>
+        </select>
+
+        <!-- Champ "Autre motif" caché par défaut, s'affiche seulement si "Autre motif" est sélectionné -->
+        <label for="other_reason" style="display:none;">Autre motif :</label>
+        <input type="text" id="other_reason" name="other_reason" style="display:none;">
+
+        <button type="submit">Soumettre</button>
+    </form>
+</body>
+</html>
