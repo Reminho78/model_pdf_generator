@@ -1,12 +1,11 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from app.extensions import db  # Importe db depuis extensions.py
 
-db = SQLAlchemy()
 migrate = Migrate()
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder="templates")
 
     # Configure l'URI de la base de données
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://remidubenard:ricketmorty@localhost/facoto_db'

@@ -4,67 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter un formulaire</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center text-gray-800">
+
+    <h1 class="text-3xl font-bold mb-6">Ajouter un formulaire</h1>
+
+    <!-- Boutons de navigation -->
+    <div class="mb-8 space-x-4">
+        <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" onclick="window.location.href='/';">Accueil</button>
+        <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded" onclick="window.location.href='/list';">Voir la Liste des Formulaires</button>
+    </div>
+
+    <!-- Formulaire pour ajouter un formulaire -->
+    <form action="/submit_form" method="post" class="form-container bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <div class="mb-4">
+            <label for="implantation" class="form-label">Implantation:</label>
+            <input type="text" id="implantation" name="implantation" required class="form-input border border-gray-300 rounded-md">
+        </div>
+
+        <div class="mb-4">
+            <label for="creation_date" class="form-label">Date de création:</label>
+            <input type="date" id="creation_date" name="creation_date" required class="form-input border border-gray-300 rounded-md">
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var today = new Date();
+                    var day = String(today.getDate()).padStart(2, '0');
+                    var month = String(today.getMonth() + 1).padStart(2, '0'); // Janvier est 0
+                    var year = today.getFullYear();
+                    var formattedDate = year + '-' + month + '-' + day;
+
+                    document.getElementById('creation_date').value = formattedDate;
+                });
+            </script>
+        </div>
+
+        <div class="mb-4">
+            <label for="billing_address" class="form-label">Adresse de facturation:</label>
+            <input type="text" id="billing_address" name="billing_address" required class="form-input border border-gray-300 rounded-md">
+        </div>
+
+        <div class="mb-4">
+            <label for="shipping_address" class="form-label">Adresse de livraison:</label>
+            <input type="text" id="shipping_address" name="shipping_address" required class="form-input border border-gray-300 rounded-md">
+        </div>
+
+        <div class="mb-4">
+            <label for="reason" class="form-label">Motif :</label>
+            <select id="reason" name="reason" onchange="toggleOtherReason()" required class="form-select border border-gray-300 rounded-md">
+                <option value="" disabled selected>Choisissez un motif</option>
+                <option value="Fermeture des locaux">Fermeture des locaux</option>
+                <option value="Autre fournisseur">Autre fournisseur</option>
+                <option value="Autre motif">Autre motif</option>
+            </select>
+        </div>
+
+        <!-- Champ "Autre motif" caché par défaut, s'affiche seulement si "Autre motif" est sélectionné -->
+        <div class="mb-4" id="other_reason_container" style="display: none;">
+            <label for="other_reason" id="other_reason_label" class="form-label">Autre motif :</label>
+            <input type="text" id="other_reason" name="other_reason" class="form-input border border-gray-300 rounded-md">
+        </div>
+
+        <!-- Bouton de soumission stylisé en orange -->
+        <div class="flex items-center justify-center">
+            <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded">
+                Soumettre
+            </button>
+        </div>
+    </form>
+
     <script>
+        // Fonction pour afficher ou masquer le champ "Autre motif" en fonction de la sélection
         function toggleOtherReason() {
             var reasonSelect = document.getElementById('reason');
-            var otherReasonInput = document.getElementById('other_reason');
+            var otherReasonContainer = document.getElementById('other_reason_container');
+
             if (reasonSelect.value === 'Autre motif') {
-                otherReasonInput.style.display = 'block';
-                otherReasonInput.required = true;
+                otherReasonContainer.style.display = 'block';
             } else {
-                otherReasonInput.style.display = 'none';
-                otherReasonInput.required = false;
-            }
-        }
-
-        function handleSubmit(event) {
-            var reasonSelect = document.getElementById('reason');
-            var otherReasonInput = document.getElementById('other_reason');
-
-            // Si "Autre motif" est sélectionné, remplace la valeur de "reason" par celle de "other_reason"
-            if (reasonSelect.value === 'Autre motif') {
-                reasonSelect.value = otherReasonInput.value;
+                otherReasonContainer.style.display = 'none';
             }
         }
     </script>
-</head>
-<body>
-    <h1>Ajouter un formulaire</h1>
 
-    <!-- Boutons de navigation -->
-    <div style="text-align: center;">
-        <button onclick="window.location.href='/';">Accueil</button>
-        <button onclick="window.location.href='/list';">Voir la Liste des Utilisateurs</button>
-    </div>
-
-    <!-- Formulaire pour ajouter un utilisateur -->
-    <form action="/submit_form" method="post" onsubmit="handleSubmit(event)">
-        <label for="implantation">Implantation:</label>
-        <input type="text" id="implantation" name="implantation" required>
-
-        <label for="creation_date">Date de création:</label>
-        <input type="date" id="creation_date" name="creation_date" required>
-
-        <label for="billing_address">Adresse de facturation:</label>
-        <input type="text" id="billing_address" name="billing_address" required>
-
-        <label for="shipping_address">Adresse de livraison:</label>
-        <input type="text" id="shipping_address" name="shipping_address" required>
-
-        <label for="reason">Motif :</label>
-        <select id="reason" name="reason" onchange="toggleOtherReason()" required>
-            <option value="" disabled selected>Choisissez un motif</option>
-            <option value="Fermeture des locaux">Fermeture des locaux</option>
-            <option value="Autre fournisseur">Autre fournisseur</option>
-            <option value="Autre motif">Autre motif</option>
-        </select>
-
-        <!-- Champ "Autre motif" caché par défaut, s'affiche seulement si "Autre motif" est sélectionné -->
-        <label for="other_reason" style="display:none;">Autre motif :</label>
-        <input type="text" id="other_reason" name="other_reason" style="display:none;">
-
-        <button type="submit">Soumettre</button>
-    </form>
 </body>
 </html>

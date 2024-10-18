@@ -4,17 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
-    <!-- Lien vers le fichier CSS externe -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>Page d'accueil</h1>
-    <p>Bienvenue sur la page d'accueil</p>
+    <!-- Lien vers le fichier CSS externe généré par Tailwind -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
+<body class="bg-gray-100 text-gray-800 font-sans">
 
-    <!-- Boutons de navigation -->
-    <div style="text-align: center;">
-        <button onclick="window.location.href='/form';">Formulaire</button>
-        <button onclick="window.location.href='/list';">Voir la Liste des Utilisateurs</button>
+    <!-- Conteneur principal centré avec espace -->
+    <div class="min-h-screen flex flex-col items-center justify-center p-6">
+        <!-- Titre principal -->
+        <h1 class="page-title text-4xl font-bold text-blue-700 mb-6">Page d'accueil</h1>
+        <p class="welcome-message text-lg mb-8 text-gray-600">Bienvenue sur la page d'accueil</p>
+
+        <!-- Boutons de navigation stylisés -->
+        <div class="flex justify-center space-x-4 mb-6">
+            <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" onclick="window.location.href='/form';">Formulaire</button>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" onclick="window.location.href='/list';">Voir la Liste des Formulaires</button>
+            <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" onclick="window.location.href='/list_pdfs';">Voir la Liste des PDFs</button>
+        </div>
     </div>
+
 </body>
 </html>

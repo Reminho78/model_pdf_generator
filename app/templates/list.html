@@ -1,52 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des Formulaires</title>
-    <!-- Lien vers le fichier CSS externe -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <h1>Liste des Formulaires</h1>
+    <!-- Lien vers le fichier CSS externe généré par Tailwind -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+function changeButtonToIcon(formId) {
+    var button = document.getElementById('download-btn-' + formId);
 
-    <!-- Boutons de navigation -->
-    <div style="text-align: center;">
-        <button onclick="window.location.href='/';">Accueil</button>
-        <button onclick="window.location.href='/form';">Formulaire</button>
+    // Attendre un court instant pour permettre au téléchargement de démarrer
+    setTimeout(function() {
+        // Remplacer le texte par une icône après le délai
+        button.innerHTML = '<i class="fa-sharp fa-solid fa-file"></i>';
+        
+        // Désactiver le bouton pour empêcher un nouveau téléchargement
+        button.disabled = true;
+
+        // Supprimer l'attribut "onclick" pour désactiver l'action
+        button.removeAttribute('onclick');
+
+        // Modifier le style pour indiquer que le bouton n'est plus actif
+        buzton.style.cursor = "default";
+    }, 200); // Délai de 2 secondes pour s'assurer que le téléchargement a démarré
+}
+
+// Fonction pour retirer un formulaire de la page et le stocker dans LocalStorage
+function removeFormFromPage(formId) {
+    var confirmation = confirm("Voulez-vous vraiment retirer ce formulaire de la page ?");
+    if (confirmation) {
+        // Supprimer la ligne correspondante du tableau
+        var formRow = document.getElementById('form-row-' + formId);
+        formRow.remove();
+
+        // Stocker l'ID du formulaire dans LocalStorage pour ne plus l'afficher à l'avenir
+        var removedForms = JSON.parse(localStorage.getItem('removedForms')) || [];
+        removedForms.push(formId);
+        localStorage.setItem('removedForms', JSON.stringify(removedForms));
+    }
+}
+
+// Vérifier si des formulaires ont été retirés et les cacher au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    var removedForms = JSON.parse(localStorage.getItem('removedForms')) || [];
+    removedForms.forEach(function(formId) {
+        var formRow = document.getElementById('form-row-' + formId);
+        if (formRow) {
+            formRow.remove(); // Cacher les formulaires retirés
+        }
+    });
+});
+    </script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-8 bg-white rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Liste des Formulaires</h1>
+
+        <!-- Boutons de navigation -->
+        <div class="flex justify-center space-x-4 mb-6">
+            <button class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" onclick="window.location.href='/';">Accueil</button>
+            <button class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded" onclick="window.location.href='/form';">Formulaire</button>
+        </div>
+
+        <!-- Table des formulaires -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr class="bg-gray-100 text-left">
+                        <th class="py-3 px-6">ID</th>
+                        <th class="py-3 px-6">Implantation</th>
+                        <th class="py-3 px-6">Date de création</th>
+                        <th class="py-3 px-6">Adresse de facturation</th>
+                        <th class="py-3 px-6">Adresse de livraison</th>
+                        <th class="py-3 px-6">Raison</th>
+                        <th class="py-3 px-6">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Parcours de la liste des formulaires -->
+                    {% for form in forms %}
+                    <tr class="border-t" id="form-row-{{ form.id }}">
+                        <td class="py-2 px-4">{{ form.id }}</td>
+                        <td class="py-2 px-4">{{ form.implantation }}</td>
+                        <td class="py-2 px-4">{{ form.creation_date }}</td>
+                        <td class="py-2 px-4">{{ form.billing_address }}</td>
+                        <td class="py-2 px-4">{{ form.shipping_address }}</td>
+                        <td class="py-2 px-4">{{ form.reason }}</td>
+                        <td class="py-2 px-4">
+                            {% if form.pdf_generated %}
+                                <img src="{{ url_for('static', filename='pdf_icon.png') }}" alt="PDF téléchargé" class="w-8">
+                            {% else %}
+                            <form action="{{ url_for('main.generate_pdf_route', form_id=form.id) }}" method="get" class="inline-block">
+                                <button id="download-btn-{{ form.id }}" type="submit" class="text-blue-500 hover:underline" onclick="changeButtonToIcon({{ form.id }});">Télécharger PDF</button>
+                            </form>
+                            {% endif %}
+                        <button onclick="removeFormFromPage({{ form.id }})" class="text-red-500 hover:underline ml-4">Retirer</button>     
+                       </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- Table des utilisateurs -->
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Implantation</th>
-                <th>Date de création</th>
-                <th>Adresse de facturation</th>
-                <th>Adresse de livraison</th>
-                <th>Raison</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for form in forms %}
-            <tr>
-                <td>{{ form.id }}</td>
-                <td>{{ form.implantation }}</td>
-                <td>{{ form.creation_date }}</td>
-                <td>{{ form.billing_address }}</td>
-                <td>{{ form.shipping_address }}</td>
-                <td>{{ form.reason }}</td>
-                <td>
-                    <!-- Formulaire pour supprimer un utilisateur -->
-                    <form action="/delete_form/{{ form.id }}" method="post" style="display:inline;">
-                        <button type="submit">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </body>
 </html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des PDFs par Motif</title>
+    <!-- Lien vers le fichier CSS externe généré par Tailwind -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-8 bg-white rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">Liste des PDFs</h1>
+
+        <!-- Bouton pour retourner à la page d'accueil -->
+        <div class="text-center mb-8">
+            <button onclick="window.location.href='{{ url_for('main.home') }}';" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                Retour à l'accueil
+            </button>
+        </div>
+
+        <!-- Formulaire de filtre par motif -->
+        <form method="get" action="{{ url_for('main.list_pdfs') }}" class="mb-8 flex flex-col items-center">
+            <label for="reason" class="font-semibold mb-2">Filtrer par Motif :</label>
+            <select id="reason" name="reason" class="border border-gray-300 rounded-lg p-2 mb-4 w-64">
+                <option value="">Tous les motifs</option>
+                <option value="Fermeture des locaux" {% if selected_reason == 'Fermeture des locaux' %}selected{% endif %}>Fermeture des locaux</option>
+                <option value="Autre fournisseur" {% if selected_reason == 'Autre fournisseur' %}selected{% endif %}>Autre fournisseur</option>
+                <option value="Autre motif" {% if selected_reason == 'Autre motif' %}selected{% endif %}>Autre motif</option>
+            </select>
+            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded">Filtrer</button>
+        </form>
+
+        <!-- Table des PDFs filtrés -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead>
+                    <tr class="bg-gray-100 text-left">
+                        <th class="py-3 px-6">ID</th>
+                        <th class="py-3 px-6">Implantation</th>
+                        <th class="py-3 px-6">Date de création</th>
+                        <th class="py-3 px-6">Adresse de facturation</th>
+                        <th class="py-3 px-6">Adresse de livraison</th>
+                        <th class="py-3 px-6">Motif</th>
+                        <th class="py-3 px-6">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Parcours de la liste des formulaires -->
+                    {% for form in forms %}
+                    <tr class="border-t">
+                        <td class="py-2 px-4">{{ form.id }}</td>
+                        <td class="py-2 px-4">{{ form.implantation }}</td>
+                        <td class="py-2 px-4">{{ form.creation_date }}</td>
+                        <td class="py-2 px-4">{{ form.billing_address }}</td>
+                        <td class="py-2 px-4">{{ form.shipping_address }}</td>
+                        <td class="py-2 px-4">{{ form.reason }}</td>
+                        <td class="py-2 px-4">
+                            <!-- Remplacer le bouton télécharger par Ouvrir, qui ouvre le PDF dans une nouvelle fenêtre -->
+                            <a href="{{ url_for('main.download_pdf', form_id=form.id) }}" target="_blank" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">
+                                Ouvrir
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>

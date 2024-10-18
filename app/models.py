@@ -1,4 +1,4 @@
-from app import db
+from app.extensions import db
 
 class Form(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -7,4 +7,4 @@ class Form(db.Model):
     billing_address = db.Column(db.String(250), nullable=False)
     shipping_address = db.Column(db.String(250), nullable=False)
     reason = db.Column(db.String(250), nullable=False)
-    pdf_data = db.Column(db.LargeBinary, nullable=True)  # Ajout de la colonne pdf_data
+    pdf_data = db.Column(db.LargeBinary, nullable=True)  # Si tu as ajouté la colonne pour le PDF
